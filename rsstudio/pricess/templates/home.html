@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dollar Price</title>
+</head>
+<body>
+
+    <h1>قیمت لحظه‌ای دلار</h1>
+
+    <div id="price">
+        {% if price %}
+            {{ price.value }} تومان
+        {% else %}
+            در حال دریافت...
+        {% endif %}
+    </div>
+
+    <script>
+        setInterval(function() {
+            location.reload();
+        }, 60000);
+    </script>
+
+</body>
+</html>
