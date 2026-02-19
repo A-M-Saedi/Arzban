@@ -1,15 +1,15 @@
 import requests
 from bs4 import BeautifulSoup
 
-def get_dollar_price():
-    url = "https://www.tgju.org/profile/price_dollar_rl"
-    response = requests.get(url)
+def get_price_from_tgju(url, data_col="info.last_trade.PDrCotVal"):
+    try:
+        response = requests.get(url, timeout=5)
+        response.raise_for_status()
+    except requests.RequestException:
+        return None
 
-    if response.status_code == 200:
-        soup = BeautifulSoup(response.text, "html.parser")
-        span = soup.find("span", {"data-col": "info.last_trade.PDrCotVal"})
-
-        if span:
-            return span.text.strip()
-
+    soup = BeautifulSoup(response.text, "html.parser")
+    span = soup.find("span", {"data-col": data_col})
+    if span:
+        return span.text.strip()
     return None

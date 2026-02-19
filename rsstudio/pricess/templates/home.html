@@ -1,25 +1,66 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Dollar Price</title>
+    <title>قیمت لحظه‌ای بازار</title>
+    <style>
+        body { font-family: Tahoma, sans-serif; background: #f5f5f5; color: #333; margin: 20px; }
+        h1 { text-align: center; color: #2c3e50; }
+        .category { margin-bottom: 30px; }
+        .category h2 { background: #3498db; color: white; padding: 10px; border-radius: 5px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        tr:nth-child(even) { background: #ecf0f1; }
+    </style>
 </head>
 <body>
 
-    <h1>قیمت لحظه‌ای دلار</h1>
+<h1>💰 قیمت لحظه‌ای بازار</h1>
 
-    <div id="price">
-        {% if price %}
-            {{ price.value }} تومان
-        {% else %}
-            در حال دریافت...
-        {% endif %}
-    </div>
+<div class="category">
+    <h2>نرخ ارز</h2>
+    <table>
+        <tr><th>نام ارز</th><th>قیمت</th></tr>
+        {% for item in currencies %}
+        <tr>
+            <td>{{ item.name }}</td>
+            <td>{{ item.value }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
 
-    <script>
-        setInterval(function() {
-            location.reload();
-        }, 60000);
-    </script>
+<div class="category">
+    <h2>نرخ طلا و نقره</h2>
+    <table>
+        <tr><th>نام</th><th>قیمت</th></tr>
+        {% for item in metals %}
+        <tr>
+            <td>{{ item.name }}</td>
+            <td>{{ item.value }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<div class="category">
+    <h2>بازار کریپتو</h2>
+    <table>
+        <tr><th>نام</th><th>قیمت</th></tr>
+        {% for item in crypto %}
+        <tr>
+            <td>{{ item.name }}</td>
+            <td>{{ item.value }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<script>
+    // رفرش خودکار هر ۶۰ ثانیه
+    setInterval(function() {
+        location.reload();
+    }, 60000);
+</script>
 
 </body>
 </html>
