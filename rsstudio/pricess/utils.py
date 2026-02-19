@@ -7,7 +7,7 @@ def get_dollar_price():
 
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, "html.parser")
-        span = soup.find("span", {"data-cst": "info.last_trade.PDrCotVal"})
+        span = soup.find("span", {"data-col": "info.last_trade.PDrCotVal"})
 
         if span:
             return span.text.strip()
