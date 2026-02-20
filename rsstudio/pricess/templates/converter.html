@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <title>💱 مبدل ارز</title>
+    <style>
+        body { font-family: Tahoma, sans-serif; background: #f5f5f5; color: #333; margin: 20px; }
+        h1 { text-align: center; color: #2c3e50; margin-bottom: 20px; }
+        .converter { max-width: 500px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px #ccc; }
+        select, input { width: 100%; padding: 8px; margin: 10px 0; border-radius: 5px; border: 1px solid #ccc; }
+        button { padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #2980b9; }
+        #result { text-align: center; font-size: 20px; margin-top: 20px; color: #27ae60; }
+        #error { text-align: center; font-size: 18px; margin-top: 20px; color: red; }
+        a { display: block; text-align: center; margin-top: 20px; color: #3498db; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<h1>💱 مبدل ارز</h1>
+
+<div class="converter">
+    <form method="POST">
+        {% csrf_token %}
+        <label>از ارز:</label>
+        <select name="from_currency" required>
+            {% for name, value in currencies.items %}
+                <option value="{{ name }}" {% if name == from_currency %}selected{% endif %}>{{ name }}</option>
+            {% endfor %}
+        </select>
+
+        <label>به ارز:</label>
+        <select name="to_currency" required>
+            {% for name, value in currencies.items %}
+                <option value="{{ name }}" {% if name == to_currency %}selected{% endif %}>{{ name }}</option>
+            {% endfor %}
+        </select>
+
+        <label>مقدار:</label>
+        <input type="number" step="any" name="amount" value="{{ amount }}" required placeholder="مقدار را وارد کنید">
+
+        <button type="submit">تبدیل کن</button>
+    </form>
+
+    {% if result is not none %}
+        {% if result %}
+            <div id="result">نتیجه: {{ result }}</div>
+        {% else %}
+            <div id="error">مقدار یا ارز انتخاب شده نامعتبر است</div>
+        {% endif %}
+    {% endif %}
+
+    <a href="{% url 'home' %}">🏠 بازگشت به صفحه اصلی</a>
+</div>
+
+</body>
+</html>

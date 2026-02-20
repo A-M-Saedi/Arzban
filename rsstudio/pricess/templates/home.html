@@ -20,10 +20,10 @@
     <h2>نرخ ارز</h2>
     <table>
         <tr><th>نام ارز</th><th>قیمت</th></tr>
-        {% for item in currencies %}
+        {% for name, value in currencies.items %}
         <tr>
-            <td>{{ item.name }}</td>
-            <td>{{ item.value }}</td>
+            <td>{{ name }}</td>
+            <td>{{ value }}</td>
         </tr>
         {% endfor %}
     </table>
@@ -56,7 +56,6 @@
 </div>
 
 <script>
-    // رفرش خودکار هر ۶۰ ثانیه
     setInterval(function() {
         location.reload();
     }, 60000);
