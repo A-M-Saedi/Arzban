@@ -2,8 +2,8 @@ from django.shortcuts import render
 from .models import Price
 from .utils import get_price_from_tgju
 
-# saedi-amir
-def home(request):
+#saedi-amir-root
+def fetch_prices():
     prices_to_fetch = [
         {"name": "دلار آمریکا", "url": "https://www.tgju.org/profile/price_dollar_rl", "category": "currency"},
         {"name": "یورو", "url": "https://www.tgju.org/profile/price_eur", "category": "currency"},
@@ -12,7 +12,6 @@ def home(request):
         {"name": "لیر ترکیه", "url": "https://www.tgju.org/profile/price_try", "category": "currency"},
         {"name": "درهم امارات", "url": "https://www.tgju.org/profile/price_aed", "category": "currency"},
         {"name": "یوان چین", "url": "https://www.tgju.org/profile/price_cny", "category": "currency"},
-
 
         {"name": "انس طلا", "url": "https://www.tgju.org/profile/ons", "category": "gold"},
         {"name": "طلای ۱۸ عیار", "url": "https://www.tgju.org/profile/geram18", "category": "gold"},
@@ -29,19 +28,36 @@ def home(request):
                 defaults={"value": value, "category": item["category"]}
             )
 
-    currencies = {price.name.strip(): price.value for price in Price.objects.filter(category="currency")}
-    metals = Price.objects.filter(category="gold")
-    crypto = Price.objects.filter(category="crypto")
 
-    return render(request, "home.html", {
-        "currencies": currencies,
-        "metals": metals,
-        "crypto": crypto,
-    })
+
+def home(request):
+    fetch_prices()
+    return render(request, "home.html")
+
+
+
+def currency_list(request):
+    fetch_prices()
+    currencies = Price.objects.filter(category="currency")
+    return render(request, "category.html", {"title": "ارزها", "items": currencies})
+
+
+
+def gold_list(request):
+    fetch_prices()
+    golds = Price.objects.filter(category="gold")
+    return render(request, "category.html", {"title": "طلا", "items": golds})
+
+
+
+def crypto_list(request):
+    cryptos = Price.objects.filter(category="crypto")
+    return render(request, "category.html", {"title": "کریپتو", "items": cryptos})
+
 
 
 def converter(request):
-    currencies = {price.name.strip(): price.value for price in Price.objects.filter(category="currency")}
+    currencies = {price.name.strip(): float(price.value.replace(",", "")) for price in Price.objects.filter(category="currency")}
 
     result = None
     from_currency = ""
@@ -57,9 +73,10 @@ def converter(request):
             amount_float = float(amount)
             from_price = currencies.get(from_currency)
             to_price = currencies.get(to_currency)
-            if from_price is not None and to_price is not None:
+
+            if from_price and to_price:
                 result = round((amount_float * from_price) / to_price, 2)
-        except (ValueError, TypeError):
+        except:
             result = None
 
     return render(request, "converter.html", {

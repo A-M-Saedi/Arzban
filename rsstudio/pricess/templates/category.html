@@ -1,0 +1,9 @@
+<h1>{{ title }}</h1>
+
+<ul>
+    {% for item in items %}
+        <li>{{ item.name }} : {{ item.value }}</li>
+    {% empty %}
+        <li>داده‌ای موجود نیست</li>
+    {% endfor %}
+</ul>
