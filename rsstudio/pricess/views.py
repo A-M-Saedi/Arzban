@@ -3,33 +3,42 @@ from .models import Price
 from .utils import get_price_from_tgju
 
 #saedi-amir-root
+PRICES_TO_FETCH = [
+    {"name": "دلار آمریکا", "url": "https://www.tgju.org/profile/price_dollar_rl", "category": "currency"},
+    {"name": "یورو", "url": "https://www.tgju.org/profile/price_eur", "category": "currency"},
+    {"name": "پوند", "url": "https://www.tgju.org/profile/price_gbp", "category": "currency"},
+    {"name": "دلار کانادا", "url": "https://www.tgju.org/profile/price_cad", "category": "currency"},
+    {"name": "لیر ترکیه", "url": "https://www.tgju.org/profile/price_try", "category": "currency"},
+    {"name": "درهم امارات", "url": "https://www.tgju.org/profile/price_aed", "category": "currency"},
+    {"name": "یوان چین", "url": "https://www.tgju.org/profile/price_cny", "category": "currency"},
+    
+    {"name": "انس طلا", "url": "https://www.tgju.org/profile/ons", "category": "gold"},
+    {"name": "طلای ۱۸ عیار", "url": "https://www.tgju.org/profile/geram18", "category": "gold"},
+    {"name": "طلای ۲۴ عیار", "url": "https://www.tgju.org/profile/geram24", "category": "gold"},
+    {"name": "سکه امامی", "url": "https://www.tgju.org/profile/sekee", "category": "gold"},
+    {"name": "سکه بهار آزادی", "url": "https://www.tgju.org/profile/sekeb", "category": "gold"},
+    
+    {"name": "بیت کوین", "url": "https://www.tgju.org/profile/crypto-bitcoin", "category": "crypto"},
+    {"name": "اتریوم", "url": "https://www.tgju.org/profile/crypto-ethereum", "category": "crypto"},
+    {"name": "تتر", "url": "https://www.tgju.org/profile/crypto-tether", "category": "crypto"},
+    {"name": "ترون", "url": "https://www.tgju.org/profile/crypto-tron", "category": "crypto"},
+    {"name": "ریپل", "url": "https://www.tgju.org/profile/crypto-ripple", "category": "crypto"},
+]
+
 def fetch_prices():
-    prices_to_fetch = [
-        {"name": "دلار آمریکا", "url": "https://www.tgju.org/profile/price_dollar_rl", "category": "currency"},
-        {"name": "یورو", "url": "https://www.tgju.org/profile/price_eur", "category": "currency"},
-        {"name": "پوند", "url": "https://www.tgju.org/profile/price_gbp", "category": "currency"},
-        {"name": "دلار کانادا", "url": "https://www.tgju.org/profile/price_cad", "category": "currency"},
-        {"name": "لیر ترکیه", "url": "https://www.tgju.org/profile/price_try", "category": "currency"},
-        {"name": "درهم امارات", "url": "https://www.tgju.org/profile/price_aed", "category": "currency"},
-        {"name": "یوان چین", "url": "https://www.tgju.org/profile/price_cny", "category": "currency"},
+    # استخراج نام ارزهای مجاز از لیست بالا
+    allowed_names = [item["name"] for item in PRICES_TO_FETCH]
 
-        {"name": "انس طلا", "url": "https://www.tgju.org/profile/ons", "category": "gold"},
-        {"name": "طلای ۱۸ عیار", "url": "https://www.tgju.org/profile/geram18", "category": "gold"},
-        {"name": "طلای ۲۴ عیار", "url": "https://www.tgju.org/profile/geram24", "category": "gold"},
-        {"name": "سکه امامی", "url": "https://www.tgju.org/profile/sekee", "category": "gold"},
-        {"name": "سکه بهار آزادی", "url": "https://www.tgju.org/profile/sekeb", "category": "gold"},
-    ]
+    # 1. حذف ارزهای اضافی که در لیست مجاز نیستند
+    Price.objects.exclude(name__in=allowed_names).delete()
 
-    for item in prices_to_fetch:
+    # 2. بروزرسانی یا ایجاد قیمت‌های مجاز
+    for item in PRICES_TO_FETCH:
         value = get_price_from_tgju(item["url"])
         if value:
             Price.objects.update_or_create(
                 name=item["name"],
-                defaults={"value": value, "category": item["category"]}
-            )
-
-
-
+                defaults={"value": value, "category": item["category"]})
 def home(request):
     fetch_prices()
     return render(request, "home.html")
