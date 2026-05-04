@@ -23,6 +23,12 @@ PRICES_TO_FETCH = [
     {"name": "تتر", "url": "https://www.tgju.org/profile/crypto-tether", "category": "crypto"},
     {"name": "ترون", "url": "https://www.tgju.org/profile/crypto-tron", "category": "crypto"},
     {"name": "ریپل", "url": "https://www.tgju.org/profile/crypto-ripple", "category": "crypto"},
+
+    
+    {"name": "نفت اپک", "url": "https://www.tgju.org/profile/oil_opec", "category": "oil"},
+    {"name": "نفت برنت", "url": "https://www.tgju.org/profile/energy-brent-oil", "category": "oil"},
+    {"name": "نفت خام", "url": "https://www.tgju.org/profile/energy-crude-oil", "category": "oil"},
+    {"name": "نفت سبک عربستان", "url": "https://www.tgju.org/profile/arab-light", "category": "oil"},
 ]
 
 def fetch_prices():
@@ -63,6 +69,11 @@ def crypto_list(request):
     cryptos = Price.objects.filter(category="crypto")
     return render(request, "category.html", {"title": "کریپتو", "items": cryptos})
 
+
+def oil_list(request):
+    fetch_prices()
+    oils = Price.objects.filter(category="oil")
+    return render(request, "category.html", {"title": "قیمت نفت", "items": oils})
 
 
 def converter(request):

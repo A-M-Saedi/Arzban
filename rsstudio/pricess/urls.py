@@ -8,4 +8,5 @@ urlpatterns = [
     path('gold/', views.gold_list, name='gold'),
     path('crypto/', views.crypto_list, name='crypto'),
     path('convert/', views.converter, name='converter'),
+    path('oil/', views.oil_list, name='oil'),
 ]

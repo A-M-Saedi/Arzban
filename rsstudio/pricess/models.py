@@ -4,6 +4,7 @@ class Price(models.Model):
         ("currency", "نرخ ارز"),
         ("gold", "نرخ طلا و نقره"),
         ("crypto", "بازار کریپتو"),
+        ("oil", "نرخ نفت")
     ]
 
     name = models.CharField(max_length=100)
