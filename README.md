@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="rsstudio/pricess/static/pricess/images/logo.png" alt="ARZBAN" width="110">
+<img src="ARZBAN/pricess/static/pricess/images/logo.png" alt="ARZBAN" width="110">
 
 # ارزبان · ARZBAN
 
