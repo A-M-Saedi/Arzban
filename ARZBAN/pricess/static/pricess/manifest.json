@@ -1,0 +1,27 @@
+{
+  "name": "ارزبان",
+  "short_name": "ارزبان",
+  "description": "قیمت لحظه‌ای دلار، طلا، ارز دیجیتال و نفت",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#22223B",
+  "theme_color": "#22223B",
+  "orientation": "portrait-primary",
+  "lang": "fa",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "/static/pricess/images/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/pricess/images/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["finance", "business"]
+}

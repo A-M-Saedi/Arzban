@@ -1,0 +1,7 @@
+# Runtime dependencies for ARZBAN (نرخ‌بان)
+# Verified on Python 3.9.6. Transitive dependencies (asgiref, sqlparse,
+# soupsieve, certifi, charset-normalizer, idna, urllib3) are resolved by pip.
+
+Django==4.2.30
+requests==2.32.5
+beautifulsoup4==4.14.3

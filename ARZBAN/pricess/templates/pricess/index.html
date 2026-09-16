@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    {% load static %}
+    <script>
+    (function () {
+        try {
+            var saved = localStorage.getItem('arzban-theme');
+            var theme = saved || ((window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark');
+            document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {}
+    })();
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ارزبان | قیمت لحظه‌ای دلار، طلا، ارز دیجیتال</title>
+    <meta name="description" content="قیمت لحظه‌ای دلار، یورو، طلا، سکه، بیت‌کوین و ارزهای دیجیتال. نرخ ارز و بازارهای مالی به‌روز در ارزبان.">
+    <meta name="keywords" content="قیمت دلار، قیمت طلا، قیمت سکه، ارز دیجیتال، بیت کوین، نرخ ارز، یورو، قیمت لحظه ای">
+    <meta name="theme-color" id="themeColorMeta" content="#22223B">
+    <meta property="og:title" content="ارزبان | قیمت لحظه‌ای بازارهای مالی">
+    <meta property="og:description" content="قیمت لحظه‌ای دلار، یورو، طلا، سکه، بیت‌کوین و ارزهای دیجیتال">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="{% static 'pricess/images/logo.png' %}">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="ارزبان | قیمت لحظه‌ای بازارهای مالی">
+    <meta name="twitter:description" content="قیمت لحظه‌ای دلار، یورو، طلا، سکه، بیت‌کوین و ارزهای دیجیتال">
+    <link rel="icon" type="image/png" href="{% static 'pricess/images/logo.jpeg' %}">
+    <link rel="apple-touch-icon" href="{% static 'pricess/images/logo.png' %}">
+    <link rel="manifest" href="{% static 'pricess/manifest.json' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <link rel="stylesheet" href="{% static 'pricess/styles.css' %}">
+</head>
+<body>
+
+    <div id="fetchOverlay" class="fetch-overlay" style="display:none;">
+        <div class="fetch-box">
+            <img src="{% static 'pricess/images/logo.png' %}" alt="ارزبان" class="fetch-logo">
+            <div class="fetch-title">ارزبان</div>
+            <p class="fetch-subtitle">در حال دریافت قیمت‌های لحظه‌ای بازار...</p>
+            <div class="fetch-progress-wrap">
+                <div class="fetch-progress-fill" id="fetchProgressBar"></div>
+            </div>
+            <div class="fetch-current" id="fetchCurrentItem">در حال اتصال به سرور...</div>
+            <div class="fetch-counter" id="fetchCounter">۰ / ۲۱</div>
+        </div>
+    </div>
+
+    <div class="ticker-container" role="marquee" aria-label="قیمت‌های لحظه‌ای بازار" aria-live="polite">
+        <div class="ticker-wrapper">
+            <ul class="price-list" id="tickerList">
+                <li>در حال بارگذاری...</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="top-logo">
+        <div class="logo-container">
+            <div class="logo-right">
+                <img src="{% static 'pricess/images/logo.png' %}" alt="ارزبان" class="logo-img">
+                <div class="logo-text">
+                    <span class="logo-fa">ارزبان<span class="logo-version-badge">BETA</span></span>
+                    <span class="logo-en">ARZBAN</span>
+                </div>
+            </div>
+
+            <span class="header-divider" aria-hidden="true"></span>
+
+            <div class="persian-date-box">
+                <svg class="date-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                    <rect x="3" y="5" width="18" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                    <line x1="3" y1="9.5" x2="21" y2="9.5" stroke="currentColor" stroke-width="1.6"/>
+                    <line x1="7.5" y1="3" x2="7.5" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                    <line x1="16.5" y1="3" x2="16.5" y2="7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                    <circle class="date-icon-dot" cx="12" cy="14.5" r="1.7" fill="currentColor"/>
+                </svg>
+                <span id="persianDate"></span>
+            </div>
+
+            <div class="header-controls">
+                <div class="live-badge">
+                    <svg class="live-pulse-icon" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                        <circle class="live-pulse-ring" cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                        <circle cx="12" cy="12" r="3" fill="currentColor"/>
+                    </svg>
+                    <span>LIVE</span>
+                </div>
+                <button class="refresh-btn" id="refreshBtn" title="بروزرسانی">
+                    <svg class="refresh-icon-svg" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                        <path d="M21 12a9 9 0 1 1-3-6.7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+                        <polyline points="21 3 21 9 15 9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span id="refreshCountdown">5:00</span>
+                </button>
+                <button class="theme-toggle-btn" id="themeToggleBtn" type="button" aria-label="تغییر حالت روز و شب">
+                    <span class="theme-toggle-glow" aria-hidden="true"></span>
+                    <i class="fas fa-moon theme-icon theme-icon--moon" aria-hidden="true"></i>
+                    <i class="fas fa-sun theme-icon theme-icon--sun" aria-hidden="true"></i>
+                    <span class="theme-tooltip" id="themeTooltip">حالت شب</span>
+                </button>
+            </div>
+
+            <div class="gtranslate_wrapper"></div>
+            <script>window.gtranslateSettings = {"default_language":"fa","native_language_names":true,"languages":["fa","en","ru","ar"],"wrapper_selector":".gtranslate_wrapper","switcher_horizontal_position":"inline","float_switcher_open_direction":"bottom","alt_flags":{"en":"usa"}}</script>
+            <script src="https://cdn.gtranslate.net/widgets/latest/float.js" defer></script>
+
+        </div>
+
+    </div>
+
+
+    <div class="banner-container" id="bannerContainer">
+        <div class="banner-wrapper">
+            <button class="banner-close" id="closeBannerBtn">
+                <i class="fas fa-times"></i>
+            </button>
+            <a href="https://www.digikala.com/landing/bookfair/?&promo_name=%D8%AF%D9%88%D8%A7%D8%B2%D8%AF%D9%87%D9%85%DB%8C%D9%86+%D9%86%D9%85%D8%A7%DB%8C%D8%B4%DA%AF%D8%A7%D9%87+%DA%A9%D8%AA%D8%A7%D8%A8+%D8%AF%DB%8C%D8%AC%DB%8C%DA%A9%D8%A7%D9%84%D8%A7+-+%D9%88%D8%A8&promo_position=home_slider_new_v2&promo_creative=208507&bCode=208507" class="banner-link" target="_blank">
+                <img src="{% static 'pricess/images/banner.webp' %}" alt="تبلیغات" class="banner-image">
+            </a>
+        </div>
+    </div>
+
+
+    <div class="content" id="mainContent">
+    </div>
+
+
+    <nav class="modern-menu" dir="ltr" aria-label="ناوبری اصلی">
+        <span class="modern-menu-highlight" aria-hidden="true"></span>
+        <ul class="modern-menu-list" role="list">
+            <li class="modern-menu-item active" data-page="home">
+                <button type="button" aria-label="خانه">
+                    <img src="{% static 'pricess/images/nav/home.png' %}" class="modern-menu-icon" alt="">
+                    <span class="modern-menu-label">خانه</span>
+                </button>
+            </li>
+            <li class="modern-menu-item" data-page="currency">
+                <button type="button" aria-label="نرخ ارز">
+                    <img src="{% static 'pricess/images/nav/currency.png' %}" class="modern-menu-icon" alt="">
+                    <span class="modern-menu-label">نرخ ارز</span>
+                </button>
+            </li>
+            <li class="modern-menu-item" data-page="gold">
+                <button type="button" aria-label="طلا و نقره">
+                    <img src="{% static 'pricess/images/nav/gold.png' %}" class="modern-menu-icon" alt="">
+                    <span class="modern-menu-label">طلا و نقره</span>
+                </button>
+            </li>
+            <li class="modern-menu-item" data-page="crypto">
+                <button type="button" aria-label="ارزهای دیجیتال">
+                    <img src="{% static 'pricess/images/nav/crypto.png' %}" class="modern-menu-icon" alt="">
+                    <span class="modern-menu-label">کریپتو</span>
+                </button>
+            </li>
+            <li class="modern-menu-item" data-page="oil">
+                <button type="button" aria-label="نفت و انرژی">
+                    <img src="{% static 'pricess/images/nav/oil.png' %}" class="modern-menu-icon" alt="">
+                    <span class="modern-menu-label">نفت و انرژی</span>
+                </button>
+            </li>
+            <li class="modern-menu-item" data-page="converter">
+                <button type="button" aria-label="مبدل ارز">
+                    <img src="{% static 'pricess/images/nav/converter.png' %}" class="modern-menu-icon" alt="">
+                    <span class="modern-menu-label">مبدل</span>
+                </button>
+            </li>
+        </ul>
+    </nav>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>درباره ما</h3>
+                <p>ما در ارزبان معتقدیم که دیدن قیمت‌ها نباید پیچیده و گیج‌کننده باشد...</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-telegram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="copyright">&copy; ۱۴۰۵ تمامی حقوق محفوظ است.</div>
+            <button class="dev-btn" id="devBtn">
+                <i class="fas fa-code"></i>
+                <span>Developers</span>
+            </button>
+        </div>
+    </footer>
+
+    <!-- Developers Modal -->
+    <div class="dev-modal-overlay" id="devModal">
+        <div class="dev-modal">
+            <button class="dev-modal-close" id="devModalClose">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="dev-modal-header">
+                <div class="dev-header-badge"><i class="fas fa-code"></i></div>
+                <h2>Team<span>.</span>Developers</h2>
+                <p class="dev-header-sub">the minds behind arzban</p>
+            </div>
+            <div class="dev-cards-wrapper">
+                <div class="dev-card dev-card--cyan">
+                    <div class="dev-card-glow"></div>
+                    <div class="dev-avatar"><span>AHR</span></div>
+                    <div class="dev-card-content">
+                        <div class="dev-role"><i class="fas fa-terminal"></i> Frontend Developer</div>
+                        <h3 class="dev-name">Amirhossein Rashmani</h3>
+                        <p class="dev-name-fa">امیرحسین رشمانی</p>
+                        <div class="dev-phone">
+                            <span class="dev-phone-label">$ call</span>
+                            <a href="tel:09303273626" class="dev-phone-number">---</a>
+                        </div>
+                        <a href="tel:09303273626" class="dev-contact-btn">
+                            <i class="fas fa-phone"></i> تماس بگیرید
+                        </a>
+                    </div>
+                    <div class="dev-card-decorators">
+                        <span class="dev-decorator dev-decorator--tl">&lt;/&gt;</span>
+                        <span class="dev-decorator dev-decorator--br">{dev}</span>
+                    </div>
+                </div>
+                <div class="dev-card dev-card--purple">
+                    <div class="dev-card-glow"></div>
+                    <div class="dev-avatar"><span>AMS</span></div>
+                    <div class="dev-card-content">
+                        <div class="dev-role"><i class="fas fa-terminal"></i> Backend Developer</div>
+                        <h3 class="dev-name">Amirmohammad Saedi</h3>
+                        <p class="dev-name-fa">امیرمحمد ساعدی</p>
+                        <div class="dev-phone">
+                            <span class="dev-phone-label">$ call</span>
+                            <a href="tel:09383947025" class="dev-phone-number">---</a>
+                        </div>
+                        <a href="tel:09383947025" class="dev-contact-btn">
+                            <i class="fas fa-phone"></i> تماس بگیرید
+                        </a>
+                    </div>
+                    <div class="dev-card-decorators">
+                        <span class="dev-decorator dev-decorator--tl">&lt;/&gt;</span>
+                        <span class="dev-decorator dev-decorator--br">{dev}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="dev-modal-footer">
+                <span>Built with</span>
+                <i class="fas fa-heart"></i>
+                <span>in Iran</span>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Scroll to top -->
+    <button class="scroll-top-btn" id="scrollToTopBtn" title="بازگشت به بالا">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Toast container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+
+    <script src="{% static 'pricess/script.js' %}" defer></script>
+</body>
+</html>
